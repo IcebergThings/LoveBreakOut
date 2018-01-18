@@ -188,9 +188,18 @@ function love.update(dt)
       end
 
       -- Keyboard control the pad
-      if love.keyboard.isDown("left") then
+      --  detect touch screen
+      local touches = love.touch.getTouches()
+      local left,touch = false, false
+      for i, id in ipairs(touches) do
+        local x, y = love.touch.getPosition(id)
+        left = x < screen_width / 2
+        touch = true
+      end
+
+      if love.keyboard.isDown("left") or (touch and left) then
         vp = math.max(vp - 1.75, -7.5)
-      elseif love.keyboard.isDown("right") then
+      elseif love.keyboard.isDown("right") or (touch and not left) then
         vp = math.min(vp + 1.75, 7.5)
       else
         vp = vp * 0.7
@@ -205,6 +214,16 @@ function love.update(dt)
     else
       -- restart
       if love.keyboard.isDown("r") or love.keyboard.isDown("R") then
+        init()
+      end
+
+      local touches = love.touch.getTouches()
+      local touch_any = false
+      for i, id in ipairs(touches) do
+        touch_any = true
+      end
+
+      if touch_any then
         init()
       end
     end
@@ -265,7 +284,7 @@ function love.draw()
     love.graphics.setColor(255, 84, 60, 255)
     scale = math.sin(time * 10.0) * 0.1 + 1.0
     gprint("Boom, you are DEAD", 10, 10, 0, 2 * scale, 2 * scale)
-    gprint("Press R to restart", 10, 10 + 40 * scale, 0, scale, scale)
+    gprint("Press R or touch anyplace to restart", 10, 10 + 40 * scale, 0, scale, scale)
 
     -- draw score total
     love.graphics.setColor(255, 255, 255, 255)
