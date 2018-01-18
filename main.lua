@@ -3,6 +3,9 @@ local screen_height = 500
 local radius = 10
 local pad_radius = 45
 
+local scalex = 1
+local scaley = 1
+
 local total_bricks_x = 10
 local total_bricks_y = 10
 local brick_width = screen_width / total_bricks_x
@@ -16,10 +19,28 @@ end
 
 -- main program
 function init()
+  -- scaling
+  mobile = false
+  if love.system.getOS() == 'iOS' or love.system.getOS() == 'Android' then
+    mobile = true
+  end
+  scalex = love.graphics.getWidth() / 400
+  scaley = love.graphics.getHeight() / 500
+
+  screen_width = 400 * scalex
+  screen_height = 500 * scaley
+  radius = 10 * scalex
+  pad_radius = 45 * scalex
+
+  total_bricks_x = 10
+  total_bricks_y = 10
+  brick_width = screen_width / total_bricks_x
+  brick_height = screen_height / 2 / total_bricks_y
+
   score = 0
   score_animate = 0
 
-  xb, yb, x0, vxb, vyb, vp = 200, 300, 200, 4, -4, 0
+  xb, yb, x0, vxb, vyb, vp = screen_width / 2, screen_height * 0.66, screen_width / 2, 4 * scalex, -4 * scalex, 0
   dead = false
   hit_power = 2
   hardness,hardness_animation = 4, 0
@@ -58,8 +79,8 @@ function love.load()
   font:setFilter("nearest", "nearest")
   love.graphics.setFont(font)
 
-  particles_hit = particles.new(84, 255, 221, 255, 6)
-  particles_brick = particles.new(80, 115, 240, 200, 5)
+  particles_hit = particles.new(84, 255, 221, 255, 6 * scalex)
+  particles_brick = particles.new(80, 115, 240, 200, 5 * scalex)
 
   init()
 end
@@ -102,14 +123,14 @@ function love.update(dt)
         hit_power = 2
       end
       -- Bounce back from pad
-      radius_diff = sqrt((xb - x0) * (xb - x0) + (yb - screen_height - 10) * (yb - screen_height - 10)) - pad_radius - radius
+      radius_diff = sqrt((xb - x0) * (xb - x0) + (yb - screen_height - 10 * scalex) * (yb - screen_height - 10 * scalex)) - pad_radius - radius
       if radius_diff <= 0 then
         local mag = sqrt(vxb * vxb + vyb * vyb)
         xb = xb + radius_diff * vxb / mag
         yb = yb + radius_diff * vyb / mag
 
         local nx = xb - x0
-        local ny = yb - screen_height - 10
+        local ny = yb - screen_height - 10 * scalex
         nx = nx / sqrt(nx * nx + ny * ny)
         ny = ny / sqrt(nx * nx + ny * ny)
 
@@ -198,9 +219,9 @@ function love.update(dt)
       end
 
       if love.keyboard.isDown("left") or (touch and left) then
-        vp = math.max(vp - 1.75, -7.5)
+        vp = math.max(vp - 1.75 * scalex, -7.5 * scalex)
       elseif love.keyboard.isDown("right") or (touch and not left) then
-        vp = math.min(vp + 1.75, 7.5)
+        vp = math.min(vp + 1.75 * scalex, 7.5 * scalex)
       else
         vp = vp * 0.7
       end
