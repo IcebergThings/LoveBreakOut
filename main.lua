@@ -73,6 +73,12 @@ function love.keypressed(key, unicode)
   end
 end
 
+function love.touchpressed(id, x, y, dx, dy, pressure)
+  if dead then
+    init()
+  end
+end
+
 -- Increase the size of the rectangle every frame.
 function love.update(dt)
   local sqrt = math.sqrt
@@ -216,16 +222,6 @@ function love.update(dt)
       if love.keyboard.isDown("r") or love.keyboard.isDown("R") then
         init()
       end
-
-      local touches = love.touch.getTouches()
-      local touch_any = false
-      for i, id in ipairs(touches) do
-        touch_any = true
-      end
-
-      if touch_any then
-        init()
-      end
     end
 
   end
@@ -276,25 +272,29 @@ function love.draw()
 
   if paused then
     love.graphics.setColor((math.sin(time * 3.5) * 0.4 + 0.6) * 255,255,(math.cos(time * 3.5) * 0.4 + 0.6) * 255)
-    scale = 2.0 * (math.sin(time * 10.0) * 0.05 + 1.0)
-    gprint("Paused. ESC to cancel", 10, 10 + 40 * scale, 0, scale, scale)
+    scale = (2.0 * (math.sin(time * 10.0) * 0.05 + 1.0)) * scalex
+    gprint("Paused. ESC to cancel", 10 * scalex, 10 * scalex + 40 * scale, 0, scale, scale)
   end
 
   if dead then
     love.graphics.setColor(255, 84, 60, 255)
-    scale = math.sin(time * 10.0) * 0.1 + 1.0
-    gprint("Boom, you are DEAD", 10, 10, 0, 2 * scale, 2 * scale)
-    gprint("Press R or touch anyplace to restart", 10, 10 + 40 * scale, 0, scale, scale)
+    scale = (math.sin(time * 10.0) * 0.1 + 1.0) * scalex
+    gprint("Boom, you are DEAD", 10 * scalex, 10 * scalex, 0, 2 * scale, 2 * scale)
+    if mobile then
+      gprint("Touch anyplace to restart", 10 * scalex, 10 * scalex + 40 * scale, 0, scale, scale)
+    else
+      gprint("Press R or touch anyplace to restart", 10 * scalex, 10 * scalex + 40 * scale, 0, scale, scale)
+    end
 
     -- draw score total
     love.graphics.setColor(255, 255, 255, 255)
     score_line = "Score " .. score
-    gprint(score_line, screen_width / 2 - string.len(score_line) * 19 * scale, 200, 0, 4 * scale, 4 * scale)
+    gprint(score_line, screen_width / 2 - string.len(score_line) * 19 * scale, 200 * scalex, 0, 4 * scale, 4 * scale)
   else
     -- draw score
     love.graphics.setColor(255, 255, 255, score_animate)
-    gprint(score, 10, 10, 0, 4, 4)
+    gprint(score, 10 * scalex, 10 * scalex, 0, 4 * scalex, 4 * scalex)
     love.graphics.setColor(255, 255, 255, hardness_animation)
-    gprint("Hardness " .. hardness, 10, 60, 0, 2, 2)
+    gprint("Hardness " .. hardness, 10 * scalex, 60 * scalex, 0, 2 * scalex, 2 * scalex)
   end
 end
