@@ -8,7 +8,7 @@ function particles.new(r,g,b,a,size)
   self.g = g or 255
   self.b = b or 255
   self.a = a or 255
-  self.size = size or 6
+  self.size = size
   self.particles = {}
 
   local random = love.math.random
