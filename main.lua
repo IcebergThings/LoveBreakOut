@@ -20,10 +20,7 @@ end
 -- main program
 function init()
   -- scaling
-  mobile = false
-  if love.system.getOS() == 'iOS' or love.system.getOS() == 'Android' then
-    mobile = true
-  end
+  mobile = love.system.getOS() == 'iOS' or love.system.getOS() == 'Android'
   scalex = love.graphics.getWidth() / 400
   scaley = love.graphics.getHeight() / 500
 
@@ -102,6 +99,11 @@ end
 
 -- Increase the size of the rectangle every frame.
 function love.update(dt)
+  -- Reject extreme case (lower than 5fps), prevent bugs
+  if dt > 0.2 then
+    return
+  end
+
   local sqrt = math.sqrt
   local ts = get_time_scale(dt)
   time = time + dt
