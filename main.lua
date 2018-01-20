@@ -261,8 +261,8 @@ function love.draw()
 
   -- shake screen effect
   if shakeMagnitude > 0.1 then
-    local dx = love.math.random(-shakeMagnitude, shakeMagnitude)
-    local dy = love.math.random(-shakeMagnitude, shakeMagnitude)
+    local dx = love.math.random(-shakeMagnitude, shakeMagnitude) * scalex
+    local dy = love.math.random(-shakeMagnitude, shakeMagnitude) * scalex
     love.graphics.translate(dx, dy)
   end
 
