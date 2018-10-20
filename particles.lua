@@ -4,10 +4,10 @@ function particles.new(r,g,b,a,size)
 
   local self = {}
 
-  self.r = r or 255
-  self.g = g or 255
-  self.b = b or 255
-  self.a = a or 255
+  self.r = r or 1
+  self.g = g or 1
+  self.b = b or 1
+  self.a = a or 1
   self.size = size
   self.particles = {}
 
