@@ -61,7 +61,7 @@ function init()
 end
 
 function change_hardness(h)
-  hardness_animation = 255
+  hardness_animation = 1
   hardness = hardness + h
 end
 
@@ -76,8 +76,8 @@ function love.load()
   font:setFilter("nearest", "nearest")
   love.graphics.setFont(font)
 
-  particles_hit = particles.new(84, 255, 221, 255, 6 * scalex)
-  particles_brick = particles.new(80, 115, 240, 200, 5 * scalex)
+  particles_hit = particles.new(84 / 255, 255 / 255, 221 / 255, 255 / 255, 6 * scalex)
+  particles_brick = particles.new(80 / 255, 115 / 255, 240 / 255, 200 / 255, 5 * scalex)
 
   init()
 end
@@ -188,7 +188,7 @@ function love.update(dt)
               end
               hit_power = hit_power + 1
               shakeMagnitude = hit_power / 2
-              score_animate = 255
+              score_animate = 1
 
               particles_brick.emit(xb,yb,-vxb,-vyb,30, sqrt(vxb*vxb + vyb*vyb), 15)
               -- reflect
@@ -208,7 +208,7 @@ function love.update(dt)
               end
               hit_power = hit_power + 1
               shakeMagnitude = hit_power / 2
-              score_animate = 255
+              score_animate = 1
               particles_brick.emit(xb,yb,-vxb,-vyb,30, sqrt(vxb*vxb + vyb*vyb), 15)
               vxb = -vxb
             end
@@ -238,11 +238,11 @@ function love.update(dt)
       x0 = math.min(math.max(x0, -5), screen_width + 5)
 
       -- Decrease
-      score_animate = math.max(score_animate - 4, 0)
-      hardness_animation = math.max(hardness_animation - 8, 0)
+      score_animate = math.max(score_animate - 4 / 255, 0)
+      hardness_animation = math.max(hardness_animation - 8 / 255, 0)
     else
       -- restart
-      if love.keyboard.isDown("r") or love.keyboard.isDown("R") then
+      if love.keyboard.isDown("r") then
         init()
       end
     end
@@ -253,10 +253,10 @@ end
 function love.draw()
   local gprint = love.graphics.print
 
-  love.graphics.clear(8, 25, 22)
+  love.graphics.clear(8 / 255, 25 / 255, 22 / 255)
 
   -- draw FPS
-  love.graphics.setColor(255, 255, 255)
+  love.graphics.setColor(255 / 255, 255 / 255, 255 / 255)
   gprint("FPS " .. love.timer.getFPS(), screen_width - 56, screen_height - 18)
 
   -- shake screen effect
@@ -267,7 +267,7 @@ function love.draw()
   end
 
   -- Draw a coloured rectangle.
-  love.graphics.setColor(255, 84, 101)
+  love.graphics.setColor(255 / 255, 84 / 255, 101 / 255)
   love.graphics.circle("fill", x0, screen_height + 10, pad_radius, 32)
 
   -- draw map
@@ -277,9 +277,9 @@ function love.draw()
         val = map[i][j]
         if val == 5 then
           rand = (i + j * total_bricks_x) * 16.0
-          love.graphics.setColor((math.sin(time * 3.0 + rand) * 0.4 + 0.6) * 255,(math.cos(time * 3.0 + rand) * 0.4 + 0.6) * 255,255)
+          love.graphics.setColor((math.sin(time * 3.0 + rand) * 0.4 + 0.6),(math.cos(time * 3.0 + rand) * 0.4 + 0.6),1)
         else
-          love.graphics.setColor(80 * (1 - val * 0.05), 115 * (1 - val * 0.05), 240 * (1 - val * 0.05))
+          love.graphics.setColor(80 * (1 - val * 0.05) / 255, 115 * (1 - val * 0.05) / 255, 240 * (1 - val * 0.05) / 255)
         end
         love.graphics.rectangle("fill", i * brick_width, j * brick_height, brick_width, brick_height)
       end
@@ -287,7 +287,7 @@ function love.draw()
   end
 
   -- draw ball
-  love.graphics.setColor(84, 255, 221)
+  love.graphics.setColor(84 / 255, 255 / 255, 221 / 255)
   love.graphics.circle("fill", xb, yb, radius, 16)
 
   particles_hit.draw()
@@ -300,7 +300,7 @@ function love.draw()
   end
 
   if dead then
-    love.graphics.setColor(255, 84, 60, 255)
+    love.graphics.setColor(255 / 255, 84 / 255, 60 / 255, 255 / 255)
     scale = (math.sin(time * 10.0) * 0.1 + 1.0) * scalex
     gprint("Boom, you are DEAD", 10 * scalex, 10 * scalex, 0, 2 * scale, 2 * scale)
     if mobile then
@@ -310,14 +310,14 @@ function love.draw()
     end
 
     -- draw score total
-    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.setColor(255 / 255, 255 / 255, 255 / 255, 255 / 255)
     score_line = "Score " .. score
     gprint(score_line, screen_width / 2 - string.len(score_line) * 19 * scale, 200 * scalex, 0, 4 * scale, 4 * scale)
   else
     -- draw score
-    love.graphics.setColor(255, 255, 255, score_animate)
+    love.graphics.setColor(255 / 255, 255 / 255, 255 / 255, score_animate)
     gprint(score, 10 * scalex, 10 * scalex, 0, 4 * scalex, 4 * scalex)
-    love.graphics.setColor(255, 255, 255, hardness_animation)
+    love.graphics.setColor(255 / 255, 255 / 255, 255 / 255, hardness_animation)
     gprint("Hardness " .. hardness, 10 * scalex, 60 * scalex, 0, 2 * scalex, 2 * scalex)
   end
 end
